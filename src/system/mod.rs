@@ -1,19 +1,18 @@
-
-pub mod station;
 pub mod body;
+pub mod station;
 
 use body::Body;
 use serde::Deserialize;
 use station::Station;
 
 #[derive(Deserialize, Debug)]
-pub struct System {
+pub struct System<'a> {
     pub id64: u64,
-    pub name: String,
+    pub name: &'a str,
     pub coords: Coords,
-    pub date: String, // TODO: parse to a chrono::DateTime
-    pub bodies: Vec<Body>,
-    pub stations: Vec<Station>,
+    pub date: &'a str, // TODO: parse to a chrono::DateTime
+    pub bodies: Vec<Body<'a>>,
+    pub stations: Vec<Station<'a>>,
 }
 
 #[derive(Deserialize, Debug)]

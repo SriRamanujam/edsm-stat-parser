@@ -2,7 +2,7 @@ mod system;
 
 use std::io::BufRead;
 
-use system::{System, body::Body};
+use system::{body::planet::PlanetType, body::Body, System};
 
 use rayon::prelude::*;
 
@@ -44,13 +44,34 @@ fn main() {
                 }
             };
 
-            let bodies = &system.bodies;
+            for body in &system.bodies {
+                if let Body::Planet(p) = body {
+                    // our conditions:
+                    // 1. Gravity between 0.85 and 1.15 G's
+                    // 2. Surface temperature between 283 and 293 K
+                    // 3. Atmosphere pressure between 0.85 and 1.15 atm
+                    // 4. Type is "Earth Like world"
 
-            for body in bodies {
-                match body {
-                    Body::Star(s) => println!("Star Subtype: {:?}", s.r#type),
-                    Body::Planet(p) => println!("Planet Subtype: {:?}", p.r#type)
-                };
+                    match p.r#type {
+                        PlanetType::EarthLikeWorld => {
+                            if let Some(surface_temp) = p.common.surfaceTemperature {
+                                if 283.0 <= surface_temp && surface_temp <= 293.0 {
+                                    if let Some(pressure) = p.surfacePressure {
+                                        if 0.85 <= pressure && pressure <= 1.15 {
+                                            if 0.85 <= p.gravity && p.gravity <= 1.15 {
+                                                println!(
+                                                    "FOUND: {} in {} system",
+                                                    p.common.name, system.name
+                                                );
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        _ => continue,
+                    }
+                }
             }
         });
 }
