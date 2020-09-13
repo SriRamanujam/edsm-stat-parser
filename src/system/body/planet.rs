@@ -8,7 +8,10 @@ use super::BodyCommon;
 #[derive(Debug, Deserialize)]
 pub struct Planet {
     #[serde(flatten)]
-    common: BodyCommon,
+    pub common: BodyCommon,
+
+    #[serde(flatten)]
+    pub r#type: PlanetType,
 
     // TODO: should this default to false?
     isLandable: Option<bool>,
@@ -30,4 +33,45 @@ pub struct Planet {
     solidComposition: Option<HashMap<String, f64>>,
     // gas giants can't be terraformed
     terraformingState: Option<String>, // TODO: replace with enum
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(tag="subType")]
+pub enum PlanetType {
+    #[serde(rename="Class I gas giant")]
+    GasGiant_I,
+    #[serde(rename="Class II gas giant")]
+    GasGiant_II,
+    #[serde(rename="Class III gas giant")]
+    GasGiant_III,
+    #[serde(rename="Class IV gas giant")]
+    GasGiant_IV,
+    #[serde(rename="Class V gas giant")]
+    GasGiant_V,
+    #[serde(rename="Gas giant with ammonia-based life")]
+    GasGiant_AmmoniaLife,
+    #[serde(rename="Gas giant with water-based life")]
+    GasGiant_WaterLife,
+    #[serde(rename="Helium-rich gas giant")]
+    GasGiant_HeliumRich,
+    #[serde(rename="Helium gas giant")]
+    GasGiant_Helium,
+    #[serde(rename="Water world")]
+    WaterWorld,
+    #[serde(rename="Metal-rich body")]
+    MetalRichBody,
+    #[serde(rename="Ammonia world")]
+    AmmoniaWorld,
+    #[serde(rename="High metal content world")]
+    HighMetalContentWorld,
+    #[serde(rename="Rocky body")]
+    RockyBody,
+    #[serde(rename="Earth-like world")]
+    EarthLikeWorld,
+    #[serde(rename="Icy body")]
+    IcyBody,
+    #[serde(rename="Rocky Ice world")]
+    RockyIceWorld,
+    #[serde(rename="Water giant")]
+    WaterGiant,
 }

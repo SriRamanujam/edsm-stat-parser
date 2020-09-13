@@ -2,7 +2,7 @@ mod system;
 
 use std::io::BufRead;
 
-use system::System;
+use system::{System, body::Body};
 
 use rayon::prelude::*;
 
@@ -35,10 +35,22 @@ fn main() {
                 ..l.len()
             };
 
-            if let Err(e) = serde_json::from_str::<System>(&l[range]) {
-                eprintln!("{}", &l);
-                eprintln!("Line {}: {}", idx, e);
-                std::process::exit(1);
+            let system = match serde_json::from_str::<System>(&l[range]) {
+                Ok(s) => s,
+                Err(e) => {
+                    eprintln!("{}", &l);
+                    eprintln!("Line {}: {}", idx, e);
+                    std::process::exit(1);
+                }
+            };
+
+            let bodies = &system.bodies;
+
+            for body in bodies {
+                match body {
+                    Body::Star(s) => println!("Star Subtype: {:?}", s.r#type),
+                    Body::Planet(p) => println!("Planet Subtype: {:?}", p.r#type)
+                };
             }
         });
 }
