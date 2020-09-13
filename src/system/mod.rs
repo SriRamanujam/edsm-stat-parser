@@ -21,3 +21,9 @@ pub struct Coords {
     y: f64,
     z: f64,
 }
+
+impl Coords {
+    pub fn abs(&self) -> f64 {
+        self.x.abs() + self.y.abs() + self.z.abs()
+    }
+}
